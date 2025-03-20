@@ -2,15 +2,40 @@
   
 
   
-    /* Header Assistant info (e.g., name and description) */
-    .vfrc-assistant-info--title {
-        font-size: 1.2em;
-        font-weight: bold;
-      }
-      
-      .vfrc-assistant-info--description {
-        font-size: 1em;
-      }
+/* Customize the header with EPICX purple gradient */
+.vfrc-header {
+    background: linear-gradient(90deg, #4b193e 0%, #291d3f 50%, #18233E 100%) !important;
+    color: white !important; 
+    border-radius: 10px 10px 0 0 !important;
+    padding: 12px 16px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+  
+  /* Make sure header title text is visible against gradient */
+  .vfrc-assistant-info--title {
+    color: white !important;
+    font-weight: 600 !important;
+    font-family: "Nunito Sans", sans-serif !important;
+  }
+  
+  /* Style the assistant description text */
+  .vfrc-assistant-info--description {
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-family: "Nunito Sans", sans-serif !important;
+  }
+  
+  /* Style header controls (close button, etc.) */
+  .vfrc-header .vfrc-button {
+    color: white !important;
+    opacity: 0.9 !important;
+  }
+  
+  .vfrc-header .vfrc-button:hover {
+    opacity: 1 !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border-radius: 4px !important;
+  }
       
       /* Customize the avatar image in the header */
       .vfrc-avatar {
@@ -28,11 +53,6 @@
           border-radius: 50% !important;
       }
   
-          /* Customize the header */
-          .vfrc-header {
-            border-radius: 50% !important;
-        }
-      
       /* Ensure the message input field is not overridden */
       .vfrc-input {
         background-color: white;
