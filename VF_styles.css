@@ -1,0 +1,163 @@
+/* 🇬🇧 ENGLISH ASSISTANT - STYLING SHEET */
+  
+
+  
+    /* Header Assistant info (e.g., name and description) */
+    .vfrc-assistant-info--title {
+        font-size: 1.2em;
+        font-weight: bold;
+      }
+      
+      .vfrc-assistant-info--description {
+        font-size: 1em;
+      }
+      
+      /* Customize the avatar image in the header */
+      .vfrc-avatar {
+        border-radius: 50%;
+        margin-right: 10px;
+      }
+    
+      /* Customize the footer */
+      .vfrc-footer {
+        border-radius: 0 !important;
+    }
+  
+        /* Customize the entire chat container */
+        .vfrc-chat {
+          border-radius: 0 !important;
+      }
+  
+          /* Customize the header */
+          .vfrc-header {
+            border-radius: 0 !important;
+        }
+      
+      /* Ensure the message input field is not overridden */
+      .vfrc-input {
+        background-color: white;
+        color: #000;
+        border-radius: 10px;
+        padding: 10px;
+        border: none;
+      }
+      
+      
+    
+      /* YRS: HIERONDER KOMEN CSS OVERRIDES VAN NIKO SHOPIFY EXTENSIONS WIDGET.CSS STYLES */
+    
+      .vfrc-timestamp {
+        display: none;
+      }
+      
+      .vfrc-message {
+        margin-left: 0px !important;
+        margin-right: -10px !important;
+      }
+      
+      .vfrc-system-response--list {
+        margin-right: 40px !important;
+      }
+      
+      .vfrc-system-response--message {
+        margin-right: 0px !important;
+      }
+      
+      .vfrc-system-response .vfrc-avatar {
+        display: none;
+      }
+      
+      .vfrc-system-response--indicator {
+        display: none !important;
+      }
+      
+      .vfrc-user-response--row {
+        margin-right: 0px !important;
+        flex-direction: row-reverse !important;
+        margin-right: 10px !important;
+      }
+      
+      .vfrc-system-response--actions {
+        padding-left: 20px !important;
+        padding-right: 10px !important;
+        margin-left: 0px !important;
+        margin-right: 0px !important;
+        flex-direction: column !important;
+        align-content: stretch !important;
+        display: flex !important;
+        flex-wrap: wrap !important;
+        margin-left: 0px !important;
+      }
+      
+      [class^="vfrc-message--extension-"],
+      [class*=" vfrc-message--extension-"] {
+        padding: 0px !important;
+      }
+    
+  /* YRS: iFrame Styling Classes Overrides (not working currently but code does not break so I 
+    will leave it as is for now (06 March 2025) */
+    
+    /*
+      Target FareHarbor iFrames specifically
+      .vfrc-message iframe[src*="fareharbor.com"] {
+        display: block !important;
+        margin: 0 auto !important;
+        width: 95% !important;
+        height: 650px !important;
+        border: none !important;
+      }
+      
+      Additional container styling to help with centering
+      .vfrc-message--extension-iframe:has(iframe[src*="fareharbor.com"]) {
+        display: flex !important;
+        justify-content: center !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 10px 0 !important;
+      }
+      
+      Make sure parent containers don't restrict the width
+      .vfrc-system-response--message:has(iframe[src*="fareharbor.com"]),
+      .vfrc-system-response:has(iframe[src*="fareharbor.com"]) {
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+      
+      Optional: Add some nice styling to the FareHarbor iFrame
+      .vfrc-message iframe[src*="fareharbor.com"] {
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+        border-radius: 6px !important;
+      }
+    */
+
+    /* YRS: Button Styling Classes to Recreate Button Styling of Old Voiceflow Webchat */
+
+/* Target only the main response buttons like "View Tours" */
+.vfrc-system-response .vfrc-button,
+.vfrc-system-response--actions .vfrc-button {
+  background-color: #A061F7; /* Purple background color */
+  color: white; /* White text */
+  border: none; /* Remove border */
+  border-radius: 4px; /* Slightly rounded corners */
+  padding: 10px 20px; /* Add padding for better spacing */
+  font-family: Arial, sans-serif; /* Clean font */
+  font-weight: 500; /* Medium font weight */
+  font-size: 16px; /* Appropriate text size */
+  transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+  cursor: pointer; /* Show pointer cursor on hover */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  text-transform: none; /* Preserve case of text */
+}
+
+/* Hover effect for these specific buttons */
+.vfrc-system-response .vfrc-button:hover,
+.vfrc-system-response--actions .vfrc-button:hover {
+  background-color: #cd98c2; /* Slightly lighter purple on hover */
+}
+
+/* Active/clicked state for these specific buttons */
+.vfrc-system-response .vfrc-button:active,
+.vfrc-system-response--actions .vfrc-button:active {
+  background-color: #C13CAF; /* Slightly purple when clicked */
+  transform: translateY(1px); /* Slight push effect */
+}
