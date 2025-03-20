@@ -3686,7 +3686,7 @@ export const EPICXBookingExtension3 = {
 
     // EPICX Booking Extension - Responsive Design (desktop & mobile compatible)
 
-    export const EPICXBookingExtensionResponsive4 = {
+    export const EPICXBookingExtension4 = {
         name: 'EPICXBooking',
         type: 'response',
         match: ({ trace }) =>
