@@ -657,7 +657,8 @@ ttq.instance('CU4F71BC77UAI9RJ1D10').identify({
     // Import extensions from the extensions.js file
     import {
       CustomizedIframeExtension,
-      CustomizedIframeExtension2
+      CustomizedIframeExtension2,
+      EPICXBookingExtension
     } from '/extensions.js';
 
     // Load the Voiceflow chat widget with extensions
@@ -685,7 +686,8 @@ ttq.instance('CU4F71BC77UAI9RJ1D10').identify({
           assistant: {
             extensions: [
             CustomizedIframeExtension,
-            CustomizedIframeExtension2
+            CustomizedIframeExtension2,
+            EPICXBookingExtension
             ],
             stylesheet: "https://yannicksegaar.github.io/DX_Demo/VF_styles.css",
           },
