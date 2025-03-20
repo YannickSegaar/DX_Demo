@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="nl-NL">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EPICX Booking Flowchart</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --epicx-purple: #A061F7;
+      --epicx-dark-purple: #4b193e;
+      --epicx-mid-purple: #291d3f;
+      --epicx-navy: #18233E;
+      --epicx-pink: #E61462;
+      --epicx-light-purple: #cd98c2;
+      --epicx-border-radius: 10px;
+      --epicx-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Nunito Sans', sans-serif;
+      background-color: #f8f9fa;
+      color: var(--epicx-navy);
+      line-height: 1.6;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    
+    header img {
+      max-width: 300px;
+      height: auto;
+      margin-bottom: 20px;
+    }
+    
+    h1 {
+      background: linear-gradient(90deg, #4b193e 0%, #291d3f 50%, #18233E 100%);
+      color: white;
+      padding: 15px;
+      border-radius: var(--epicx-border-radius);
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    
+    h2 {
+      color: var(--epicx-dark-purple);
+      margin: 30px 0 15px;
+      font-size: 24px;
+    }
+    
+    h3 {
+      color: var(--epicx-purple);
+      margin: 20px 0 10px;
+      font-size: 20px;
+    }
+    
+    .flowchart {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .step {
+      background: white;
+      border-radius: var(--epicx-border-radius);
+      padding: 20px;
+      box-shadow: var(--epicx-box-shadow);
+    }
+    
+    .step-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .step-number {
+      background: linear-gradient(90deg, #4b193e 0%, #291d3f 50%, #18233E 100%);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      margin-right: 15px;
+      flex-shrink: 0;
+    }
+    
+    .step-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--epicx-navy);
+    }
+    
+    .options {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+    
+    .option {
+      border: 2px solid var(--epicx-purple);
+      border-radius: var(--epicx-border-radius);
+      padding: 15px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .option:hover {
+      background-color: var(--epicx-purple);
+      color: white;
+      transform: translateY(-3px);
+    }
+    
+    .sub-options {
+      margin-top: 15px;
+      display: none;
+      background-color: #f9f9f9;
+      border-radius: var(--epicx-border-radius);
+      padding: 15px;
+    }
+    
+    .sub-option {
+      margin-bottom: 10px;
+      padding: 10px;
+      background-color: white;
+      border-radius: var(--epicx-border-radius);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .booking-link {
+      display: inline-block;
+      margin-top: 10px;
+      background: linear-gradient(90deg, #4b193e 0%, #291d3f 50%, #18233E 100%);
+      color: white;
+      padding: 8px 15px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    
+    .booking-link:hover {
+      background: var(--epicx-pink);
+      transform: translateY(-2px);
+    }
+    
+    .active {
+      display: block;
+    }
+    
+    .highlight {
+      background-color: var(--epicx-purple);
+      color: white;
+    }
+
+    .activity-list {
+      list-style-type: none;
+      margin-left: 20px;
+    }
+    
+    .activity-list li {
+      margin-bottom: 8px;
+      padding-left: 20px;
+      position: relative;
+    }
+    
+    .activity-list li::before {
+      content: "•";
+      color: var(--epicx-purple);
+      font-weight: bold;
+      position: absolute;
+      left: 0;
+    }
+    
+    .schedule {
+      background-color: rgba(160, 97, 247, 0.1);
+      padding: 10px;
+      border-radius: 5px;
+      margin-top: 5px;
+      font-size: 14px;
+    }
+    
+    .flow-arrow {
+      display: flex;
+      justify-content: center;
+      margin: 10px 0;
+      color: var(--epicx-purple);
+      font-size: 24px;
+    }
+    
+    footer {
+      margin-top: 50px;
+      text-align: center;
+      color: var(--epicx-navy);
+      font-size: 14px;
+    }
+    
+    @media (max-width: 768px) {
+      .options {
+        grid-template-columns: 1fr;
+      }
+      
+      h1 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <img src="Epicx_logo.png" alt="EPICX Logo">
+      <h1>EPICX Booking Process Flowchart</h1>
+      <p>Volg deze stappen om je avontuur bij EPICX te boeken!</p>
+    </header>
+    
+    <div class="flowchart">
+      <!-- Step 1: Choose Location -->
+      <div class="step">
+        <div class="step-header">
+          <div class="step-number">1</div>
+          <div class="step-title">Kies een Locatie</div>
+        </div>
+        <p>EPICX heeft twee locaties, elk met verschillende activiteiten en ervaringen:</p>
+        
+        <div class="options">
+          <div class="option" onclick="toggleOptions('zoetermeer')">
+            <h3>EPICX Zoetermeer</h3>
+            <p>Saloméschouw 154, 2726 JX Zoetermeer</p>
+            <p>Tel: 079-2073001</p>
+          </div>
+          
+          <div class="option" onclick="toggleOptions('denhaag')">
+            <h3>EPICX Den Haag</h3>
+            <p>Groene zoom 9, 2491 EJ Den Haag</p>
+            <p>Tel: 070-2092025</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="flow-arrow">↓</div>
+      
+      <!-- Step 2: Choose Activity Type -->
+      <div class="step">
+        <div class="step-header">
+          <div class="step-number">2</div>
+          <div class="step-title">Kies een Activiteit</div>
+        </div>
+        
+        <!-- Zoetermeer Activities -->
+        <div id="zoetermeer" class="sub-options">
+          <h3>EPICX Zoetermeer Activiteiten</h3>
+          
+          <div class="sub-option">
+            <h4>Adventure City</h4>
+            <ul class="activity-list">
+              <li>Active Pixel - Interactieve projectie games</li>
+              <li>Laser Game - Team-based laser tag</li>
+              <li>Jump Arena - Met de grootste Airbag van Europa</li>
+              <li>Ninja Tag - Obstakelparcours met ninja uitdagingen</li>
+            </ul>
+            <a href="https://epicxzoetermeer.dewi-online.nl/iframe/club/74/reservations/direct/category/615" target="_blank" class="booking-link">Boek Adventure City</a>
+          </div>
+          
+          <div class="sub-option">
+            <h4>Puppy Party (3-6 jaar)</h4>
+            <p>90 minuten Jump Arena speciaal voor de allerkleinsten!</p>
+            <ul class="activity-list">
+              <li>1,5 uur toegang tot de Jump Arena</li>
+              <li>Onbeperkt limonade</li>
+              <li>Eigen tafel</li>
+              <li>Ouders/begeleiders (18+) jumpen gratis mee!</li>
+            </ul>
+            <p>Prijs: €11,99 p.p voor 90 min</p>
+            <a href="https://epicxzoetermeer.dewi-online.nl/iframe/club/74/reservations/direct/activity/220" target="_blank" class="booking-link">Boek Puppy Party</a>
+          </div>
+          
+          <div class="sub-option">
+            <h4>Puppy Jump (3-6 jaar)</h4>
+            <p>Regelmatige sessies speciaal voor kleine kinderen</p>
+            <div class="schedule">
+              <p>Woensdag: 10:30 - 12:00</p>
+              <p>Zaterdag: 09:30 - 11:00</p>
+              <p>Zondag: 09:30 - 11:00</p>
+            </div>
+            <a href="https://epicxzoetermeer.dewi-online.nl/iframe/club/74/reservations/direct/category/615" target="_blank" class="booking-link">Boek Puppy Jump</a>
+          </div>
+          
+          <div class="sub-option">
+            <h4>Speciale Events</h4>
+            <ul class="activity-list">
+              <li>Happy Hour - Kortingsactie voor jumpsessies</li>
+              <li>Family Friday - Speciale familiepakketten op vrijdag</li>
+            </ul>
+            <a href="https://epicxzoetermeer.dewi-online.nl/iframe/club/74/reservations/direct/category/615" target="_blank" class="booking-link">Boek Speciale Events</a>
+          </div>
+          
+          <div class="sub-option">
+            <h4>Algemene Booking</h4>
+            <p>Bekijk alle activiteiten en beschikbaarheid voor Zoetermeer</p>
+            <a href="https://epicxzoetermeer.dewi-online.nl/iframe/club/74/reservations" target="_blank" class="booking-link">Algemene Booking Zoetermeer</a>
+          </div>
+        </div>
+        
+        <!-- Den Haag Activities -->
+        <div id="denhaag" class="sub-options">
+          <h3>EPICX Den Haag Activiteiten</h3>
+          
+          <div class="sub-option">
+            <h4>Adventure City</h4>
+            <ul class="activity-list">
+              <li>Active Pixel - Interactieve projectie games</li>
+              <li>Laser Game - Team-based laser tag</li>
+              <li>Mega Bounce - Trampolinepark</li>
+            </ul>
+            <a href="https://mtdh.dewi-online.nl/iframe/club/152/reservations/direct/category/1044" target="_blank" class="booking-link">Boek Adventure City</a>
+          </div>
+          
+          <div class="sub-option">
+            <h4>Kidsplay</h4>
+            <ul class="activity-list">
+              <li>Fun House - Indoor speelstructuur voor kinderen</li>
+              <li>Peuterzone - Speciaal gebied voor peuters en kleine kinderen</li>
+            </ul>
+            <a href="https://mtdh.dewi-online.nl/iframe/club/152/reservations/direct/category/1044" target="_blank" class="booking-link">Boek Kidsplay</a>
+          </div>
+          
+          <div class="sub-option">
+            <h4>Clay Café Lab</h4>
+            <p>Creatieve activiteiten met pottenbakken en verven</p>
+            <a href="https://mtdh.dewi-online.nl/iframe/club/152/reservations" target="_blank" class="booking-link">Boek Clay Café Lab</a>
+          </div>
+          
+          <div class="sub-option">
+            <h4>Algemene Booking</h4>
+            <p>Bekijk alle activiteiten en beschikbaarheid voor Den Haag</p>
+            <a href="https://mtdh.dewi-online.nl/iframe/club/152/reservations" target="_blank" class="booking-link">Algemene Booking Den Haag</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="flow-arrow">↓</div>
+      
+      <!-- Step 3: Booking Process -->
+      <div class="step">
+        <div class="step-header">
+          <div class="step-number">3</div>
+          <div class="step-title">Voltooi je Boeking</div>
+        </div>
+        <p>Nadat je op een van de bovenstaande boekingslinks hebt geklikt, volg je deze stappen om je boeking te voltooien:</p>
+        
+        <div class="options">
+          <div class="option">
+            <h4>1. Kies Datum & Tijd</h4>
+            <p>Selecteer wanneer je wilt komen</p>
+          </div>
+          
+          <div class="option">
+            <h4>2. Kies Aantal Personen</h4>
+            <p>Selecteer het aantal deelnemers</p>
+          </div>
+          
+          <div class="option">
+            <h4>3. Voeg Extra's Toe</h4>
+            <p>Speciale sokken, eten & drinken, etc.</p>
+          </div>
+          
+          <div class="option">
+            <h4>4. Vul je Gegevens in</h4>
+            <p>Persoonlijke informatie voor de boeking</p>
+          </div>
+          
+          <div class="option">
+            <h4>5. Bevestig & Betaal</h4>
+            <p>Rond je reservering af</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <footer>
+      <p>© EPICX 2025 - Alle rechten voorbehouden</p>
+      <p>Voor meer informatie: <a href="https://epicx.eu">www.epicx.eu</a></p>
+    </footer>
+  </div>
+
+  <script>
+    function toggleOptions(id) {
+      // Hide all sub-options first
+      const allSubOptions = document.querySelectorAll('.sub-options');
+      allSubOptions.forEach(option => {
+        option.classList.remove('active');
+      });
+      
+      // Remove highlight from all options
+      const allOptions = document.querySelectorAll('.option');
+      allOptions.forEach(option => {
+        option.classList.remove('highlight');
+      });
+      
+      // Show the selected sub-options
+      const selectedOption = document.getElementById(id);
+      selectedOption.classList.add('active');
+      
+      // Highlight the clicked option
+      event.currentTarget.classList.add('highlight');
+    }
+  </script>
+</body>
+</html>
