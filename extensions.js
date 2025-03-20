@@ -336,3 +336,1087 @@ export const CustomizedIframeExtension2 = {
       }
     },
 };
+
+
+// YRS: BOOKING PROCESS EXTENSION - VERSION 1 (20 March 2025)
+
+// EPICX Booking Extension - Full Implementation
+export const EPICXBookingExtension = {
+    name: 'EPICXBooking',
+    type: 'response',
+    match: ({ trace }) =>
+      trace.type === 'ext_epicxBooking' || trace.payload?.name === 'ext_epicxBooking',
+    render: ({ trace, element }) => {
+      // Extract properties from the payload with default values
+      const { 
+        title = 'EPICX Boekingsassistent',
+        step1Title = 'Kies een Locatie',
+        step1Description = 'Selecteer een van onze EPICX locaties om te beginnen.',
+        step2Title = 'Kies een Activiteit',
+        step2Description = 'Selecteer de activiteit die je wilt doen.',
+        step3Title = 'Bevestig je Boeking',
+        step3Description = 'Je hebt gekozen voor',
+        cancelLabel = 'Annuleren',
+        backLabel = 'Terug',
+        nextLabel = 'Volgende',
+        completeLabel = 'Voltooien',
+        height = '600',
+        borderColor = '#A061F7',
+        padding = '0',
+        delay = 0,
+        maxWidth = '460px',
+      } = trace.payload || {};
+  
+      // Location data
+      const locations = [
+        {
+          id: 'zoetermeer',
+          name: 'EPICX Zoetermeer',
+          address: 'Saloméschouw 154, 2726 JX Zoetermeer',
+          phone: '079-2073001'
+        },
+        {
+          id: 'denhaag',
+          name: 'EPICX Den Haag',
+          address: 'Groene zoom 9, 2491 EJ Den Haag',
+          phone: '070-2092025'
+        }
+      ];
+  
+      // Activity data for Zoetermeer
+      const zoetermeerActivities = [
+        {
+          id: 'puppy-party',
+          name: 'Puppy Party',
+          description: 'Speciaal voor kinderen van 3 t/m 6 jaar. Tijdens de Puppy Jump is alleen de Jump Arena geopend en exclusief voor de allerkleinsten.',
+          price: '€ 11,99 p.p voor 90 min',
+          image: 'https://epicx.eu/wp-content/uploads/2024/10/900.24562_Puppy_Party.png',
+          bookingUrl: 'https://epicxzoetermeer.dewi-online.nl/iframe/club/74/reservations/direct/activity/220'
+        },
+        {
+          id: 'adventure-city',
+          name: 'Adventure City',
+          description: 'Ervaar Active Pixel, Laser Game, Jump Arena, en Ninja Tag in ons uitgebreide avonturenpark.',
+          price: 'Vanaf € 11,99',
+          image: 'https://epicx.eu/wp-content/uploads/2024/06/sfeerimpressie_03-1-1020x1024.png',
+          bookingUrl: 'https://epicxzoetermeer.dewi-online.nl/iframe/club/74/reservations/direct/category/615'
+        },
+        {
+          id: 'happy-hour',
+          name: 'Happy Hour',
+          description: 'Geniet van speciale kortingen tijdens onze Happy Hours! Een geweldige kans om meer plezier te hebben voor minder geld.',
+          price: 'Speciale tarieven',
+          image: 'https://epicx.eu/wp-content/uploads/2024/10/900.24562_Happy_Hour.png',
+          bookingUrl: 'https://epicxzoetermeer.dewi-online.nl/iframe/club/74/reservations/direct/category/615'
+        },
+        {
+          id: 'family-friday',
+          name: 'Family Friday',
+          description: 'Vrijdagavond is familie-avond! Kom samen met het hele gezin en geniet van onze speciale gezinsarrangementen.',
+          price: 'Speciale gezinstarieven',
+          image: 'https://epicx.eu/wp-content/uploads/2024/09/900.24562_Family_Friday.png',
+          bookingUrl: 'https://epicxzoetermeer.dewi-online.nl/iframe/club/74/reservations/direct/category/615'
+        }
+      ];
+  
+      // Activity data for Den Haag
+      const denhaagActivities = [
+        {
+          id: 'adventure-city',
+          name: 'Adventure City',
+          description: 'Ervaar Active Pixel, Laser Game en Mega Bounce in ons uitgebreide avonturenpark.',
+          price: 'Vanaf € 11,99',
+          image: 'https://epicx.eu/wp-content/uploads/2024/06/sfeerimpressie_03-1-1020x1024.png',
+          bookingUrl: 'https://mtdh.dewi-online.nl/iframe/club/152/reservations/direct/category/1044'
+        },
+        {
+          id: 'kidsplay',
+          name: 'Kidsplay',
+          description: 'Fun House en Peuterzone speciaal voor de jongere kinderen. Veilig spelen en plezier maken!',
+          price: 'Vanaf € 9,99',
+          image: 'https://epicx.eu/wp-content/uploads/2024/06/Sfeerimpressie_01-8-1021x1024.jpg',
+          bookingUrl: 'https://mtdh.dewi-online.nl/iframe/club/152/reservations/direct/category/1044'
+        },
+        {
+          id: 'clay-cafe',
+          name: 'Clay Café Lab',
+          description: 'Creatieve activiteiten met pottenbakken en verven. Laat je creativiteit de vrije loop!',
+          price: 'Vanaf € 12,99',
+          image: 'https://epicx.eu/wp-content/uploads/2023/11/Sfeerimpressie_01-1-1021x1024.jpg',
+          bookingUrl: 'https://mtdh.dewi-online.nl/iframe/club/152/reservations'
+        }
+      ];
+  
+      // Clear element first
+      element.innerHTML = '';
+  
+      // Create a container for the extension
+      const container = document.createElement('div');
+      container.style.width = '100%';
+      container.style.display = 'flex';
+      container.style.justifyContent = 'center';
+      container.style.alignItems = 'center';
+      container.style.maxWidth = '100%';
+      container.style.margin = '0';
+      container.style.padding = padding;
+      container.style.boxSizing = 'border-box';
+  
+      // Create the main wrapper
+      const wrapper = document.createElement('div');
+      wrapper.className = 'epicx-booking-extension';
+      wrapper.dataset.extensionId = 'epicx-booking';
+  
+      // Apply styling and initial states
+      wrapper.style.width = '100%';
+      wrapper.style.maxWidth = maxWidth;
+      wrapper.style.height = `${height}px`;
+      wrapper.style.backgroundColor = 'white';
+      wrapper.style.borderRadius = '10px';
+      wrapper.style.overflow = 'hidden';
+      wrapper.style.position = 'relative';
+      wrapper.style.border = `2px solid ${borderColor}`;
+      wrapper.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+      wrapper.style.display = 'flex';
+      wrapper.style.flexDirection = 'column';
+      wrapper.style.fontFamily = "'Nunito Sans', sans-serif";
+      wrapper.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+      wrapper.style.opacity = '0';
+      wrapper.style.transform = 'translateY(20px)';
+  
+      // Create booking state object to track user selections
+      const bookingState = {
+        currentStep: 1,
+        selectedLocation: null,
+        selectedLocationName: null,
+        selectedActivity: null,
+        selectedActivityName: null,
+        selectedActivityUrl: null,
+        carouselPositions: {
+          zoetermeer: 0,
+          denhaag: 0
+        }
+      };
+  
+      // Construct the HTML content
+      wrapper.innerHTML = `
+        <style>
+          /* Base styles for extension */
+          .epicx-booking-extension * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Nunito Sans', sans-serif;
+          }
+          
+          /* Header */
+          .extension-header {
+            background: linear-gradient(90deg, #4b193e 0%, #291d3f 50%, #18233E 100%);
+            color: white;
+            padding: 16px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 18px;
+          }
+          
+          /* Content area */
+          .extension-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            position: relative;
+          }
+          
+          /* Progress indicator */
+          .progress-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+          }
+          
+          .progress-steps {
+            display: flex;
+            align-items: center;
+          }
+          
+          .step-indicator {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #555;
+            font-weight: 600;
+            font-size: 14px;
+            position: relative;
+          }
+          
+          .step-indicator.active {
+            background-color: #A061F7;
+            color: white;
+          }
+          
+          .step-indicator.completed {
+            background-color: #A061F7;
+            color: white;
+          }
+          
+          .step-connector {
+            width: 40px;
+            height: 2px;
+            background-color: #e0e0e0;
+          }
+          
+          .step-connector.active {
+            background-color: #A061F7;
+          }
+          
+          /* Step content */
+          .step-content {
+            display: none;
+          }
+          
+          .step-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+          }
+          
+          @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          
+          .step-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #18233E;
+          }
+          
+          .step-description {
+            margin-bottom: 20px;
+            color: #666;
+          }
+          
+          /* Location cards */
+          .location-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+          }
+          
+          .location-card {
+            border: 2px solid #A061F7;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+          }
+          
+          .location-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          }
+          
+          .location-card.selected {
+            border-color: #E61462;
+            background-color: rgba(160, 97, 247, 0.05);
+          }
+          
+          .location-card-header {
+            background: linear-gradient(90deg, #4b193e 0%, #291d3f 50%, #18233E 100%);
+            color: white;
+            padding: 12px;
+            font-weight: 600;
+            font-size: 18px;
+          }
+          
+          .location-card-content {
+            padding: 15px;
+          }
+          
+          .location-card-address {
+            color: #555;
+            font-size: 14px;
+            margin-bottom: 5px;
+          }
+          
+          .location-card-phone {
+            color: #555;
+            font-size: 14px;
+          }
+          
+          .location-check {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #E61462;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+          }
+          
+          .location-card.selected .location-check {
+            opacity: 1;
+          }
+          
+          /* Activity carousel */
+          .activity-carousel {
+            position: relative;
+            margin: 0 -20px;
+            padding: 0 20px;
+          }
+          
+          .carousel-container {
+            overflow: hidden;
+            position: relative;
+            margin: 0 auto;
+          }
+          
+          .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+          }
+          
+          .activity-card {
+            flex: 0 0 100%;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            background-color: white;
+            margin-right: 15px;
+            border: 2px solid #A061F7;
+            height: 350px;
+            display: flex;
+            flex-direction: column;
+          }
+          
+          .activity-card-image {
+            height: 160px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+          }
+          
+          .activity-card-content {
+            padding: 15px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+          }
+          
+          .activity-card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #18233E;
+          }
+          
+          .activity-card-description {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+            flex: 1;
+          }
+          
+          .activity-card-price {
+            color: #A061F7;
+            font-weight: 600;
+            margin-bottom: 10px;
+          }
+          
+          .book-btn {
+            background: linear-gradient(90deg, #4b193e 0%, #291d3f 50%, #18233E 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+          }
+          
+          .book-btn:hover {
+            background: linear-gradient(90deg, #5c1f4d 0%, #35264d 50%, #25304c 100%);
+            transform: translateY(-2px);
+          }
+          
+          .carousel-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 15px;
+            gap: 10px;
+          }
+          
+          .carousel-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #ddd;
+            cursor: pointer;
+            transition: all 0.3s ease;
+          }
+          
+          .carousel-dot.active {
+            background-color: #A061F7;
+            transform: scale(1.2);
+          }
+          
+          .carousel-btn {
+            background-color: #A061F7;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+          }
+          
+          .carousel-btn:hover {
+            background-color: #18233E;
+            transform: scale(1.1);
+          }
+          
+          .carousel-btn:disabled {
+            background-color: #ddd;
+            cursor: not-allowed;
+            opacity: 0.5;
+          }
+          
+          .carousel-btn-icon {
+            width: 20px;
+            height: 20px;
+          }
+          
+          /* iframe container */
+          .iframe-container {
+            margin-top: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid #A061F7;
+            height: 400px;
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            position: relative;
+          }
+          
+          .iframe-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+          }
+          
+          /* Buttons */
+          .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+          }
+          
+          .btn {
+            background-color: #A061F7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+          }
+          
+          .btn:hover {
+            background-color: #18233E;
+          }
+          
+          .btn-secondary {
+            background-color: #e0e0e0;
+            color: #333;
+          }
+          
+          .btn-secondary:hover {
+            background-color: #d0d0d0;
+          }
+          
+          .btn:disabled {
+            background-color: #ddd;
+            cursor: not-allowed;
+            opacity: 0.5;
+          }
+          
+          /* Loading spinner */
+          .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(160, 97, 247, 0.2);
+            border-radius: 50%;
+            border-top: 4px solid #A061F7;
+            animation: spin 1s linear infinite;
+          }
+          
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        </style>
+        
+        <div class="extension-header">
+          ${title}
+        </div>
+        
+        <div class="extension-content">
+          <!-- Progress Indicator -->
+          <div class="progress-container">
+            <div class="progress-steps">
+              <div class="step-indicator active" id="step-indicator-1">1</div>
+              <div class="step-connector" id="connector-1-2"></div>
+              <div class="step-indicator" id="step-indicator-2">2</div>
+              <div class="step-connector" id="connector-2-3"></div>
+              <div class="step-indicator" id="step-indicator-3">3</div>
+            </div>
+          </div>
+          
+          <!-- Step 1: Location Selection -->
+          <div class="step-content active" id="step-1">
+            <div class="step-title">${step1Title}</div>
+            <div class="step-description">${step1Description}</div>
+            
+            <div class="location-cards">
+              ${locations.map(location => `
+                <div class="location-card" data-location="${location.id}" data-location-name="${location.name}">
+                  <div class="location-card-header">${location.name}</div>
+                  <div class="location-card-content">
+                    <div class="location-card-address">${location.address}</div>
+                    <div class="location-card-phone">${location.phone}</div>
+                  </div>
+                  <div class="location-check">✓</div>
+                </div>
+              `).join('')}
+            </div>
+            
+            <div class="nav-buttons">
+              <button class="btn btn-secondary" id="cancel-btn">${cancelLabel}</button>
+              <button class="btn" id="next-from-locations" disabled>${nextLabel}</button>
+            </div>
+          </div>
+          
+          <!-- Step 2: Activity Selection -->
+          <div class="step-content" id="step-2">
+            <div class="step-title">${step2Title}</div>
+            <div class="step-description">${step2Description}</div>
+            
+            <!-- Zoetermeer Activities Carousel -->
+            <div class="activity-carousel" id="zoetermeer-activities" style="display: none;">
+              <div class="carousel-container">
+                <div class="carousel-track" id="zoetermeer-carousel-track">
+                  ${zoetermeerActivities.map(activity => `
+                    <div class="activity-card" data-activity="${activity.id}" data-activity-name="${activity.name}" data-activity-url="${activity.bookingUrl}">
+                      <div class="activity-card-image" style="background-image: url('${activity.image}');"></div>
+                      <div class="activity-card-content">
+                        <div class="activity-card-title">${activity.name}</div>
+                        <div class="activity-card-description">${activity.description}</div>
+                        <div class="activity-card-price">${activity.price}</div>
+                        <button class="book-btn" data-activity="${activity.id}" data-activity-name="${activity.name}" data-activity-url="${activity.bookingUrl}">Boek ${activity.name}</button>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+              
+              <div class="carousel-controls">
+                <button class="carousel-btn" id="zoetermeer-prev" disabled>
+                  <svg class="carousel-btn-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 18L9 12L15 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                ${zoetermeerActivities.map((_, index) => `
+                  <div class="carousel-dot ${index === 0 ? 'active' : ''}" data-location="zoetermeer" data-index="${index}"></div>
+                `).join('')}
+                <button class="carousel-btn" id="zoetermeer-next">
+                  <svg class="carousel-btn-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 18L15 12L9 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            
+            <!-- Den Haag Activities Carousel -->
+            <div class="activity-carousel" id="denhaag-activities" style="display: none;">
+              <div class="carousel-container">
+                <div class="carousel-track" id="denhaag-carousel-track">
+                  ${denhaagActivities.map(activity => `
+                    <div class="activity-card" data-activity="${activity.id}" data-activity-name="${activity.name}" data-activity-url="${activity.bookingUrl}">
+                      <div class="activity-card-image" style="background-image: url('${activity.image}');"></div>
+                      <div class="activity-card-content">
+                        <div class="activity-card-title">${activity.name}</div>
+                        <div class="activity-card-description">${activity.description}</div>
+                        <div class="activity-card-price">${activity.price}</div>
+                        <button class="book-btn" data-activity="${activity.id}" data-activity-name="${activity.name}" data-activity-url="${activity.bookingUrl}">Boek ${activity.name}</button>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+              
+              <div class="carousel-controls">
+                <button class="carousel-btn" id="denhaag-prev" disabled>
+                  <svg class="carousel-btn-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 18L9 12L15 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+                ${denhaagActivities.map((_, index) => `
+                  <div class="carousel-dot ${index === 0 ? 'active' : ''}" data-location="denhaag" data-index="${index}"></div>
+                `).join('')}
+                <button class="carousel-btn" id="denhaag-next">
+                  <svg class="carousel-btn-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 18L15 12L9 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            
+            <div class="nav-buttons">
+              <button class="btn btn-secondary" id="back-to-locations-btn">${backLabel}</button>
+              <button class="btn" id="next-from-activities" disabled>${nextLabel}</button>
+            </div>
+          </div>
+          
+          <!-- Step 3: Booking Confirmation -->
+          <div class="step-content" id="step-3">
+            <div class="step-title">${step3Title}</div>
+            <div class="step-description">${step3Description} <span id="selected-activity-display">activiteit</span> bij <span id="selected-location-display">locatie</span>.</div>
+            
+            <div class="iframe-container" id="booking-iframe-container">
+              <div id="iframe-placeholder" style="text-align: center; padding: 20px;">
+                <div class="loading-spinner" style="margin: 0 auto 20px;"></div>
+                <p>De boekingsmodule wordt geladen...</p>
+              </div>
+              <!-- iframe will be inserted here -->
+            </div>
+            
+            <div class="nav-buttons">
+              <button class="btn btn-secondary" id="back-to-activities-btn">${backLabel}</button>
+              <button class="btn" id="complete-btn">${completeLabel}</button>
+            </div>
+          </div>
+        </div>
+      `;
+  
+      // Add the wrapper to the container
+      container.appendChild(wrapper);
+      element.appendChild(container);
+  
+      // Make the extension visible with animation
+      setTimeout(() => {
+        wrapper.style.opacity = '1';
+        wrapper.style.transform = 'translateY(0)';
+      }, 100);
+  
+      // Setup event listeners
+      function setupEventListeners() {
+        // Location selection
+        const locationCards = wrapper.querySelectorAll('.location-card');
+        const nextFromLocationsBtn = wrapper.querySelector('#next-from-locations');
+        const cancelBtn = wrapper.querySelector('#cancel-btn');
+        const nextFromActivitiesBtn = wrapper.querySelector('#next-from-activities');
+        const backToLocationsBtn = wrapper.querySelector('#back-to-locations-btn');
+        const backToActivitiesBtn = wrapper.querySelector('#back-to-activities-btn');
+        const completeBtn = wrapper.querySelector('#complete-btn');
+  
+        // Add click event to location cards
+        locationCards.forEach(card => {
+          card.addEventListener('click', () => {
+            // Remove selected class from all cards
+            locationCards.forEach(c => c.classList.remove('selected'));
+            
+            // Add selected class to clicked card
+            card.classList.add('selected');
+            
+            // Update booking state
+            bookingState.selectedLocation = card.dataset.location;
+            bookingState.selectedLocationName = card.dataset.locationName;
+            
+            // Enable next button
+            if (nextFromLocationsBtn) {
+              nextFromLocationsBtn.disabled = false;
+            }
+          });
+        });
+  
+        // Next button from location selection
+        if (nextFromLocationsBtn) {
+          nextFromLocationsBtn.addEventListener('click', () => {
+            if (bookingState.selectedLocation) {
+              goToStep(2);
+            }
+          });
+        }
+  
+        // Cancel button
+        if (cancelBtn) {
+          cancelBtn.addEventListener('click', () => {
+            cancelBooking();
+          });
+        }
+  
+        // Back to locations button
+        if (backToLocationsBtn) {
+          backToLocationsBtn.addEventListener('click', () => {
+            goToStep(1);
+          });
+        }
+  
+        // Back to activities button
+        if (backToActivitiesBtn) {
+          backToActivitiesBtn.addEventListener('click', () => {
+            goToStep(2);
+          });
+        }
+  
+        // Next button from activities
+        if (nextFromActivitiesBtn) {
+          nextFromActivitiesBtn.addEventListener('click', () => {
+            if (bookingState.selectedActivity) {
+              goToStep(3);
+            }
+          });
+        }
+  
+        // Complete button
+        if (completeBtn) {
+          completeBtn.addEventListener('click', () => {
+            completeBooking();
+          });
+        }
+  
+        // Setup carousel navigation
+        setupCarousels();
+      }
+  
+      // Setup carousels
+      function setupCarousels() {
+        // Zoetermeer carousel controls
+        const zoetermeerPrevBtn = wrapper.querySelector('#zoetermeer-prev');
+        const zoetermeerNextBtn = wrapper.querySelector('#zoetermeer-next');
+        const zoetermeerDots = wrapper.querySelectorAll('#zoetermeer-activities .carousel-dot');
+        
+        // Den Haag carousel controls
+        const denhaagPrevBtn = wrapper.querySelector('#denhaag-prev');
+        const denhaagNextBtn = wrapper.querySelector('#denhaag-next');
+        const denhaagDots = wrapper.querySelectorAll('#denhaag-activities .carousel-dot');
+        
+        // Book buttons
+        const bookButtons = wrapper.querySelectorAll('.book-btn');
+        
+        // Add click events to carousel buttons
+        if (zoetermeerPrevBtn) {
+          zoetermeerPrevBtn.addEventListener('click', () => {
+            moveCarousel('zoetermeer', -1);
+          });
+        }
+        
+        if (zoetermeerNextBtn) {
+          zoetermeerNextBtn.addEventListener('click', () => {
+            moveCarousel('zoetermeer', 1);
+          });
+        }
+        
+        if (denhaagPrevBtn) {
+          denhaagPrevBtn.addEventListener('click', () => {
+            moveCarousel('denhaag', -1);
+          });
+        }
+        
+        if (denhaagNextBtn) {
+          denhaagNextBtn.addEventListener('click', () => {
+            moveCarousel('denhaag', 1);
+          });
+        }
+        
+        // Add click events to carousel dots
+        zoetermeerDots.forEach(dot => {
+          dot.addEventListener('click', () => {
+            jumpToSlide('zoetermeer', parseInt(dot.dataset.index, 10));
+          });
+        });
+        
+        denhaagDots.forEach(dot => {
+          dot.addEventListener('click', () => {
+            jumpToSlide('denhaag', parseInt(dot.dataset.index, 10));
+          });
+        });
+        
+        // Add click events to book buttons
+        bookButtons.forEach(button => {
+          button.addEventListener('click', () => {
+            selectActivity(
+              button.dataset.activity,
+              button.dataset.activityName,
+              button.dataset.activityUrl
+            );
+          });
+        });
+      }
+  
+      // Move carousel
+      function moveCarousel(location, direction) {
+        const carouselTrack = wrapper.querySelector(`#${location}-carousel-track`);
+        if (!carouselTrack) return;
+        
+        const activities = location === 'zoetermeer' ? zoetermeerActivities : denhaagActivities;
+        const currentPosition = bookingState.carouselPositions[location];
+        const newPosition = currentPosition + direction;
+        
+        // Validate new position
+        if (newPosition < 0 || newPosition >= activities.length) return;
+        
+        // Update position
+        bookingState.carouselPositions[location] = newPosition;
+        
+        // Move carousel
+        carouselTrack.style.transform = `translateX(-${newPosition * 100}%)`;
+        
+        // Update UI
+        updateCarouselControls(location);
+      }
+  
+      // Jump to specific slide
+      function jumpToSlide(location, index) {
+        const carouselTrack = wrapper.querySelector(`#${location}-carousel-track`);
+        if (!carouselTrack) return;
+        
+        const activities = location === 'zoetermeer' ? zoetermeerActivities : denhaagActivities;
+        
+        // Validate index
+        if (index < 0 || index >= activities.length) return;
+        
+        // Update position
+        bookingState.carouselPositions[location] = index;
+        
+        // Move carousel
+        carouselTrack.style.transform = `translateX(-${index * 100}%)`;
+        
+        // Update UI
+        updateCarouselControls(location);
+      }
+  
+      // Update carousel controls
+      function updateCarouselControls(location) {
+        const prevBtn = wrapper.querySelector(`#${location}-prev`);
+        const nextBtn = wrapper.querySelector(`#${location}-next`);
+        const dots = wrapper.querySelectorAll(`#${location}-activities .carousel-dot`);
+        const currentPosition = bookingState.carouselPositions[location];
+        const activities = location === 'zoetermeer' ? zoetermeerActivities : denhaagActivities;
+        
+        // Update buttons
+        if (prevBtn) {
+          prevBtn.disabled = currentPosition === 0;
+        }
+        
+        if (nextBtn) {
+          nextBtn.disabled = currentPosition === activities.length - 1;
+        }
+        
+        // Update dots
+        dots.forEach((dot, index) => {
+          dot.classList.toggle('active', index === currentPosition);
+        });
+      }
+  
+      // Select activity
+      function selectActivity(activityId, activityName, activityUrl) {
+        bookingState.selectedActivity = activityId;
+        bookingState.selectedActivityName = activityName;
+        bookingState.selectedActivityUrl = activityUrl;
+        
+        // Update UI
+        const nextBtn = wrapper.querySelector('#next-from-activities');
+        if (nextBtn) {
+          nextBtn.disabled = false;
+        }
+        
+        // Show selected activity name
+        const selectedActivityDisplay = wrapper.querySelector('#selected-activity-display');
+        const selectedLocationDisplay = wrapper.querySelector('#selected-location-display');
+        
+        if (selectedActivityDisplay) {
+          selectedActivityDisplay.textContent = activityName;
+        }
+        
+        if (selectedLocationDisplay) {
+          selectedLocationDisplay.textContent = bookingState.selectedLocationName;
+        }
+        
+        // Directly go to step 3
+        goToStep(3);
+      }
+  
+      // Go to specific step
+      function goToStep(step) {
+        bookingState.currentStep = step;
+        
+        // Hide all steps
+        const stepContents = wrapper.querySelectorAll('.step-content');
+        stepContents.forEach(content => {
+          content.classList.remove('active');
+        });
+        
+        // Show selected step
+        const targetStep = wrapper.querySelector(`#step-${step}`);
+        if (targetStep) {
+          targetStep.classList.add('active');
+        }
+        
+        // Update progress indicator
+        updateProgress(step);
+        
+        // Step-specific logic
+        if (step === 2) {
+          // Show activities for selected location
+          const zoetermeerActivities = wrapper.querySelector('#zoetermeer-activities');
+          const denhaagActivities = wrapper.querySelector('#denhaag-activities');
+          
+          if (zoetermeerActivities) {
+            zoetermeerActivities.style.display = bookingState.selectedLocation === 'zoetermeer' ? 'block' : 'none';
+          }
+          
+          if (denhaagActivities) {
+            denhaagActivities.style.display = bookingState.selectedLocation === 'denhaag' ? 'block' : 'none';
+          }
+          
+          // Reset carousel position
+          const activeCarouselTrack = wrapper.querySelector(`#${bookingState.selectedLocation}-carousel-track`);
+          if (activeCarouselTrack) {
+            activeCarouselTrack.style.transform = 'translateX(0)';
+            bookingState.carouselPositions[bookingState.selectedLocation] = 0;
+            updateCarouselControls(bookingState.selectedLocation);
+          }
+        }
+        
+        if (step === 3 && bookingState.selectedActivityUrl) {
+          loadBookingIframe(bookingState.selectedActivityUrl);
+        }
+      }
+  
+      // Update progress indicator
+      function updateProgress(currentStep) {
+        // Update step indicators
+        const stepIndicators = wrapper.querySelectorAll('.step-indicator');
+        const connectors = wrapper.querySelectorAll('.step-connector');
+        
+        stepIndicators.forEach((indicator, index) => {
+          const stepNum = index + 1;
+          
+          // Reset classes
+          indicator.classList.remove('active', 'completed');
+          
+          // Set appropriate classes
+          if (stepNum < currentStep) {
+            indicator.classList.add('completed');
+          } else if (stepNum === currentStep) {
+            indicator.classList.add('active', 'completed');
+          }
+        });
+        
+        // Update connectors
+        connectors.forEach((connector, index) => {
+          const connectionNum = index + 1;
+          connector.classList.toggle('active', connectionNum < currentStep);
+        });
+      }
+  
+      // Load booking iframe
+      function loadBookingIframe(url) {
+        const iframeContainer = wrapper.querySelector('#booking-iframe-container');
+        const placeholder = wrapper.querySelector('#iframe-placeholder');
+        
+        if (!iframeContainer) return;
+        
+        // Create iframe
+        const iframe = document.createElement('iframe');
+        iframe.src = url;
+        iframe.style.width = '100%';
+        iframe.style.height = '100%';
+        iframe.style.border = 'none';
+        iframe.allowFullscreen = true;
+        
+        // Set loading and error handlers
+        iframe.onload = function() {
+          if (placeholder) {
+            placeholder.style.display = 'none';
+          }
+        };
+        
+        iframe.onerror = function() {
+          if (placeholder) {
+            placeholder.innerHTML = 'Er is een fout opgetreden bij het laden van de boekingsmodule. Probeer het later opnieuw.';
+          }
+        };
+        
+        // Clear existing iframe if any
+        const existingIframe = iframeContainer.querySelector('iframe');
+        if (existingIframe) {
+          existingIframe.remove();
+        }
+        
+        // Add iframe to container
+        iframeContainer.appendChild(iframe);
+      }
+  
+      // Cancel booking
+      function cancelBooking() {
+        // Signal to Voiceflow that booking was cancelled
+        if (window.voiceflow && window.voiceflow.chat) {
+          window.voiceflow.chat.interact({
+            type: 'request',
+            payload: {
+              type: 'booking-cancel'
+            }
+          });
+        }
+      }
+  
+      // Complete booking
+      function completeBooking() {
+        // Prepare data to send back to Voiceflow
+        const completionData = {
+          location: bookingState.selectedLocationName,
+          activity: bookingState.selectedActivityName,
+          bookingUrl: bookingState.selectedActivityUrl
+        };
+        
+        // Signal to Voiceflow that booking is complete
+        if (window.voiceflow && window.voiceflow.chat) {
+          window.voiceflow.chat.interact({
+            type: 'request',
+            payload: {
+              type: 'booking-complete',
+              data: completionData
+            }
+          });
+        }
+      }
+  
+      // Initialize event listeners with a slight delay to ensure DOM is ready
+      setTimeout(() => {
+        setupEventListeners();
+      }, delay + 100);
+    }
+  };
