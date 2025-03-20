@@ -50,7 +50,7 @@
   
         /* Customize the entire chat container */
         .vfrc-chat {
-          border-radius: 50% !important;
+          border-radius: 0 !important;
       }
   
       /* Ensure the message input field is not overridden */
